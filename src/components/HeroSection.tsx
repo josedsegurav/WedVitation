@@ -1,6 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { COUPLE } from '@/app/config'
+import { WEDDING } from '@/app/config'
+
+console.log(WEDDING.dateDisplay)
 
 export default function HeroSection() {
   const ringRef = useRef<SVGCircleElement>(null)
@@ -81,7 +85,7 @@ export default function HeroSection() {
         {/* Eyebrow label */}
         <p
           className="font-body uppercase mb-7"
-          style={{ fontSize: 10, letterSpacing: '0.42em', color: '#C9A96E' }}
+          style={{ fontSize: 12, letterSpacing: '0.42em', color: '#C9A96E' }}
         >
           We&apos;re Getting Married
         </p>
@@ -135,7 +139,7 @@ export default function HeroSection() {
               fill="#C9A96E"
               letterSpacing="2"
             >
-              S &amp; M
+              {COUPLE.monogram}
             </text>
 
             {/* Thin rule below monogram */}
@@ -150,15 +154,16 @@ export default function HeroSection() {
               fill="#8B6914"
               letterSpacing="3"
             >
-              15 June · MMXXVI
+              {WEDDING.dateDisplay}
             </text>
           </svg>
         </div>
 
         {/* Names headline */}
         <h1
-          className="font-script mb-4"
+          className="font-script mb-4 mt-4"
           style={{
+            marginTop: '15%',
             fontSize: 'clamp(3rem, 9vw, 5.5rem)',
             lineHeight: 1.1,
             background: 'linear-gradient(135deg, #C9A96E 0%, #E8D5B0 50%, #8B6914 100%)',
@@ -167,7 +172,7 @@ export default function HeroSection() {
             backgroundClip: 'text',
           }}
         >
-          Sofia &amp; Marco
+          {COUPLE.names}
         </h1>
 
         {/* Ornamental divider */}

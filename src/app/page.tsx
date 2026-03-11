@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import EnvelopeOpener from '@/components/EnvelopeOpener'
 import HeroSection from '@/components/HeroSection'
 import CountdownSection from '@/components/CountdownSection'

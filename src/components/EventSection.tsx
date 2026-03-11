@@ -1,4 +1,6 @@
 'use client'
+import { EVENTS } from '@/app/config';
+import { WEDDING } from '@/app/config';
 
 interface EventCardProps {
   type: 'ceremony' | 'reception'
@@ -116,7 +118,7 @@ function EventCard({ type, venue, date, time, ampm, address, mapsUrl }: EventCar
           letterSpacing: '-0.04em',
         }}
       >
-        15
+        {WEDDING.dateDisplay.split(' ')[0]}
       </span>
 
       {/* Eyebrow label */}
@@ -216,24 +218,18 @@ export default function EventSection() {
 
         {/* Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
-          <EventCard
-            type="ceremony"
-            venue="Cathedral of Santa Maria"
-            date="15 June 2026"
-            time="11:00"
-            ampm="A.M."
-            address="Piazza del Duomo, Florence, Tuscany, Italy"
-            mapsUrl="https://maps.google.com"
-          />
-          <EventCard
-            type="reception"
-            venue="Villa La Signoria"
-            date="15 June 2026"
-            time="15:00"
-            ampm="P.M."
-            address="Via delle Cinque Vie, Chianti, Tuscany, Italy"
-            mapsUrl="https://maps.google.com"
-          />
+          {EVENTS.map(event => (
+            <EventCard
+              key={event.type}
+              type={event.type}
+              venue={event.venue}
+              date={event.date}
+              time={event.time}
+              ampm={event.ampm}
+              address={event.address}
+              mapsUrl={event.mapsUrl}
+            />
+          ))}
         </div>
 
         {/* Bottom separator */}

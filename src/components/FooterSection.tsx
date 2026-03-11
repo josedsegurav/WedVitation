@@ -1,5 +1,7 @@
 'use client'
 
+import { COUPLE, WEDDING, FOOTER_TAGLINE } from "@/app/config"
+
 export default function FooterSection() {
   return (
     <footer
@@ -65,7 +67,7 @@ export default function FooterSection() {
           }}
         >
           <span className="font-script" style={{ fontSize: 26, color: 'rgba(255,255,255,0.55)', lineHeight: 1 }}>
-            S &amp; M
+            {COUPLE.monogram}
           </span>
           {/* Vignette */}
           <div style={{
@@ -87,12 +89,12 @@ export default function FooterSection() {
             backgroundClip: 'text',
           }}
         >
-          Sofia &amp; Marco
+          {COUPLE.names}
         </h2>
 
         {/* Date */}
         <p className="font-body uppercase" style={{ fontSize: 10, letterSpacing: '0.38em', color: '#8B6914', opacity: 0.75, marginBottom: 24 }}>
-          June 15 · 2026 · Tuscany, Italy
+          {WEDDING.dateDisplay}
         </p>
 
         {/* Ornamental rule */}
@@ -106,7 +108,7 @@ export default function FooterSection() {
 
         {/* Tagline */}
         <p className="font-display italic font-light" style={{ fontSize: '1rem', color: '#5C4A2A', opacity: 0.68, marginBottom: 40 }}>
-          This invitation is exclusively for you.
+          {FOOTER_TAGLINE}
         </p>
 
         {/* Credit line */}

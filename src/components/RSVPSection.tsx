@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { WEDDING } from '@/app/config';
 
 type FormState = {
   name: string
@@ -70,7 +71,7 @@ export default function RSVPSection() {
             <div style={{ width: 64, height: 1, background: 'linear-gradient(to left, transparent, #C9A96E)' }} />
           </div>
           <p className="font-display italic font-light" style={{ fontSize: '0.95rem', color: '#8B6914', opacity: 0.75 }}>
-            Please respond by May 1, 2026
+            Please respond by {WEDDING.rsvpDeadline}
           </p>
         </div>
 

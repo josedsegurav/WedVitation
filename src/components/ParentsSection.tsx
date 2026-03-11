@@ -1,9 +1,5 @@
 'use client'
-
-const FAMILIES = [
-  { label: "Bride's Family", family: 'Rossi Family', parents: 'Antonio & Lucia Rossi' },
-  { label: "Groom's Family", family: 'De Luca Family', parents: 'Giovanni & Elena De Luca' },
-]
+import { FAMILIES } from '@/app/config'
 
 export default function ParentsSection() {
   return (
@@ -45,7 +41,7 @@ export default function ParentsSection() {
 
         {/* Family cards */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          {FAMILIES.map(({ label, family, parents }) => (
+          {FAMILIES.map(({ label, family }) => (
             <div
               key={family}
               style={{
@@ -94,7 +90,7 @@ export default function ParentsSection() {
                 {family}
               </p>
               <p className="font-body" style={{ fontSize: 12, color: '#8B6914', opacity: 0.85 }}>
-                {parents}
+                {family}
               </p>
             </div>
           ))}

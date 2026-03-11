@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState } from 'react';
+import { COUPLE } from '@/app/config';
 
 interface Props {
   onOpen: () => void
@@ -77,7 +78,7 @@ export default function EnvelopeOpener({ onOpen }: Props) {
               backgroundClip: 'text',
             }}
           >
-            Sofia &amp; Marco
+            {COUPLE.names}
           </h1>
         </div>
 
@@ -127,7 +128,7 @@ export default function EnvelopeOpener({ onOpen }: Props) {
             transition: 'transform 1s cubic-bezier(0.33,1,0.68,1)',
           }}>
             <div style={{ width: 36, height: 1, background: 'linear-gradient(to right, transparent, #C9A96E, transparent)' }} />
-            <span className="font-script" style={{ fontSize: 21, color: '#C9A96E', lineHeight: 1.2 }}>Sofia &amp; Marco</span>
+            <span className="font-script" style={{ fontSize: 21, color: '#C9A96E', lineHeight: 1.2 }}>{COUPLE.names}</span>
             <span className="font-body uppercase" style={{ fontSize: 9, letterSpacing: '0.18em', color: '#8B6914' }}>June 15 · 2026</span>
             <div style={{ width: 36, height: 1, background: 'linear-gradient(to right, transparent, #C9A96E, transparent)' }} />
           </div>
@@ -146,7 +147,7 @@ export default function EnvelopeOpener({ onOpen }: Props) {
             // While opening: flap drops to z:3, seal(10) appears on top.
             zIndex: Z.seal,
           }}>
-            <span className="font-script text-white" style={{ fontSize: 22, lineHeight: 1, marginTop: 2 }}>S</span>
+            <span className="font-script text-white" style={{ fontSize: 22, lineHeight: 1, marginTop: 2 }}>{COUPLE.sealInitial}</span>
           </div>
 
           {/* 5 · Envelope flap — highest z while closed, drops below seal when opening */}

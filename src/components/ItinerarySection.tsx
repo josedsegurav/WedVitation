@@ -1,11 +1,15 @@
 'use client'
 
+import { ITINERARY } from '@/app/config';
 // All icons at a fixed 28×32 viewBox — consistent weight and size
-const ITEMS = [
+const ITEMS = ITINERARY.map(({time, title, desc}) => ({
+  time:time,
+  title:title,
+  desc:desc
+}))
+
+const ICONS = [
   {
-    time: '11:00 A.M.',
-    title: 'Religious Ceremony',
-    desc: 'Cathedral of Santa Maria',
     icon: (
       <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
         <line x1="14" y1="1" x2="14" y2="8"  stroke="#C9A96E" strokeWidth="1.1" strokeLinecap="round"/>
@@ -15,12 +19,10 @@ const ITEMS = [
         <path d="M11 31 V25 Q11 21 14 21 Q17 21 17 25 V31" stroke="#C9A96E" strokeWidth="0.9" fill="rgba(201,169,110,0.12)"/>
         <circle cx="14" cy="16" r="2.5" stroke="#C9A96E" strokeWidth="0.8" fill="rgba(201,169,110,0.15)"/>
       </svg>
+
     ),
   },
   {
-    time: '15:00 P.M.',
-    title: 'Reception & Cocktail',
-    desc: 'Villa La Signoria gardens',
     icon: (
       <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
         <path d="M7 5 L14 3 L21 5 L19 18 Q14 24 9 18Z" stroke="#C9A96E" strokeWidth="1" fill="rgba(201,169,110,0.08)"/>
@@ -31,9 +33,6 @@ const ITEMS = [
     ),
   },
   {
-    time: '16:00 P.M.',
-    title: 'Toast & Brindisi',
-    desc: 'Champagne for the newlyweds',
     icon: (
       <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
         <path d="M8 5 L11 20 Q11 24 8 26"  stroke="#C9A96E" strokeWidth="1" strokeLinecap="round" fill="none"/>
@@ -50,9 +49,6 @@ const ITEMS = [
     ),
   },
   {
-    time: '17:00 P.M.',
-    title: 'Wedding Dinner',
-    desc: 'Traditional Tuscan banquet',
     icon: (
       <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
         <ellipse cx="14" cy="18" rx="10" ry="2.5" stroke="#C9A96E" strokeWidth="1"/>
@@ -64,9 +60,6 @@ const ITEMS = [
     ),
   },
   {
-    time: '20:00 P.M.',
-    title: 'First Dance',
-    desc: 'Dance the night away',
     icon: (
       <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
         <circle cx="10" cy="6" r="2.5" stroke="#C9A96E" strokeWidth="1"/>
@@ -192,7 +185,7 @@ export default function ItinerarySection() {
                     zIndex: 2,
                     flexBasis: 52,
                   }}>
-                    {item.icon}
+                    {ICONS[i].icon}
                   </div>
 
                   {/* Spacer — mirrors content card width */}

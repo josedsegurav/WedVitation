@@ -1,12 +1,8 @@
 'use client'
 
-const FORBIDDEN = [
-  { name: 'White',     hex: '#FFFFFF' },
-  { name: 'Ivory',     hex: '#FFFFF0' },
-  { name: 'Champagne', hex: '#F7E7CE' },
-  { name: 'Blush',     hex: '#F4C2C2' },
-]
+import { DRESS_CODE } from '@/app/config';
 
+const FORBIDDEN = DRESS_CODE.reservedColors;
 // Tuxedo jacket — clean 40×44px linework
 function TuxedoIcon() {
   return (

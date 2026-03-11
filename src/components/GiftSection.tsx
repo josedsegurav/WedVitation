@@ -1,14 +1,14 @@
 'use client'
 
+import { GIFTS } from '@/app/config'
 import { useState } from 'react'
 
-const BANK_ROWS = [
-  ['Bank',           'Banca Toscana'],
-  ['Account Holder', 'Sofia Rossi'],
-  ['Account Type',   'Savings Account'],
-  ['IBAN',           'IT60X0542811101000000123456'],
-  ['BIC / SWIFT',    'BANCI2T1'],
-]
+const BANK_ROWS = GIFTS.bank.map(({label, value}) => ({
+  label,
+  value
+}))
+
+console.log(BANK_ROWS)
 
 // Gift box — 28×28px, clean minimal linework
 function GiftIcon() {
@@ -81,8 +81,7 @@ export default function GiftSection() {
             <div style={{ width: 64, height: 1, background: 'linear-gradient(to left, transparent, #C9A96E)' }} />
           </div>
           <p className="font-display italic font-light" style={{ fontSize: '1rem', color: '#5C4A2A', opacity: 0.72, lineHeight: 1.7 }}>
-            Your presence is the greatest gift.<br />
-            If you wish to honour us further,<br />here are our details.
+            {GIFTS.message}
           </p>
         </div>
 
@@ -144,9 +143,9 @@ export default function GiftSection() {
           }}>
             <div style={{ padding: '0 20px 20px' }}>
               <div style={{ borderTop: '1px solid rgba(201,169,110,0.2)', paddingTop: 14 }}>
-                {BANK_ROWS.map(([label, value]) => (
+                {BANK_ROWS.map((item, i) => (
                   <div
-                    key={label}
+                    key={i}
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -157,10 +156,10 @@ export default function GiftSection() {
                     }}
                   >
                     <span className="font-body" style={{ fontSize: 10, color: '#8B6914', opacity: 0.65, flexShrink: 0 }}>
-                      {label}
+                      {item.label}
                     </span>
                     <span className="font-body" style={{ fontSize: 11, color: '#2C2C2C', fontWeight: 500, textAlign: 'right', wordBreak: 'break-all' }}>
-                      {value}
+                      {item.value}
                     </span>
                   </div>
                 ))}
@@ -207,7 +206,7 @@ export default function GiftSection() {
               Envelope Box
             </p>
             <p className="font-display italic font-light" style={{ fontSize: '0.95rem', color: '#5C4A2A', lineHeight: 1.65, opacity: 0.8 }}>
-              A treasure chest will be available at the venue for those who prefer to deliver their gift in person.
+              {GIFTS.envelopeNote}
             </p>
           </div>
         </div>

@@ -1,16 +1,15 @@
 'use client'
 
+import { GALLERY, COUPLE, PHOTO_UPLOAD_URL } from '@/app/config';
 import { useState } from 'react'
 
-// All gradients stay within the warm gold/earth palette of the design system
-const ITEMS = [
-  { id: 0, gradient: 'linear-gradient(160deg, #C9A040, #8B6520)',  label: 'Engagement' },
-  { id: 1, gradient: 'linear-gradient(160deg, #B09060, #7A6040)',  label: 'Together'   },
-  { id: 2, gradient: 'linear-gradient(160deg, #D4B880, #A08040)',  label: 'Our Story'  },
-  { id: 3, gradient: 'linear-gradient(160deg, #A09070, #706050)',  label: 'In Love'    },
-  { id: 4, gradient: 'linear-gradient(160deg, #C0A870, #907840)',  label: 'Joy'        },
-  { id: 5, gradient: 'linear-gradient(160deg, #B8A060, #887030)',  label: 'Forever'    },
-]
+
+
+const ITEMS = GALLERY.map(({ id, color1, color2, label }) => ({
+  id: id,
+  gradient: `linear-gradient(160deg, ${color1}, ${color2})`,
+  label: label,
+}));
 
 // Grid layout: item 0 spans 2 cols × 2 rows, rest fill 1×1
 const GRID: Record<number, React.CSSProperties> = {
@@ -108,7 +107,7 @@ export default function GallerySection() {
                   className="font-script"
                   style={{ fontSize: id === 0 ? 52 : 28, color: 'rgba(255,255,255,0.18)', lineHeight: 1 }}
                 >
-                  S &amp; M
+                  {COUPLE.monogram}
                 </span>
                 <span
                   className="font-body uppercase"
@@ -202,7 +201,7 @@ export default function GallerySection() {
           </p>
 
           <a
-            href="#"
+            href={PHOTO_UPLOAD_URL}
             className="font-body uppercase"
             style={{
               fontSize: 9,

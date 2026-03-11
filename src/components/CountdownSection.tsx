@@ -1,12 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-const WEDDING_DATE = new Date('2026-06-15T11:00:00')
-
+import { COUPLE, WEDDING, CALENDAR_URL } from '@/app/config'
+console.log(WEDDING.dateCalendar);
 function getTimeLeft() {
   const now = new Date()
-  const diff = WEDDING_DATE.getTime() - now.getTime()
+  const diff = new Date(WEDDING.dateISO).getTime() - now.getTime()
   if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 }
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -148,14 +147,14 @@ export default function CountdownSection() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
           <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,169,110,0.3))' }} />
           <span className="font-body uppercase" style={{ fontSize: 9, letterSpacing: '0.3em', color: '#C9A96E', opacity: 0.7 }}>
-            15 June 2026 · Tuscany
+            {WEDDING.dateDisplay} · {WEDDING.location}
           </span>
           <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,169,110,0.3))' }} />
         </div>
 
         {/* Calendar CTA */}
         <a
-          href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Sofia+%26+Marco+Wedding&dates=20260615T090000Z/20260615T220000Z&details=Join+us+for+our+wedding+celebration!&location=Tuscany,+Italy"
+          href={CALENDAR_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="font-body uppercase"
