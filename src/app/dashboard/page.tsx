@@ -29,7 +29,7 @@ const SEED_GUESTS: Guest[] = [
   { id:"10",name:"Roberto Mancini",    passes:3, status:"pending",   token:"tok_roberto", phone:"393331234010", email:"",                    createdAt:"2026-01-22" },
 ];
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://wed-vitation.vercel.app";
 const mkLink = (token: string) => `${BASE_URL}/?token=${token}`;
 const genToken = () => "tok_" + Math.random().toString(36).slice(2,10);
 
