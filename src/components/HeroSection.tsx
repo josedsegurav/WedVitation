@@ -4,8 +4,6 @@ import { useEffect, useRef } from 'react'
 import { COUPLE } from '@/app/config'
 import { WEDDING } from '@/app/config'
 
-console.log(WEDDING.dateDisplay)
-
 export default function HeroSection() {
   const ringRef = useRef<SVGCircleElement>(null)
 

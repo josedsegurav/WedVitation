@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { COUPLE, WEDDING, CALENDAR_URL } from '@/app/config'
-console.log(WEDDING.dateCalendar);
+
 function getTimeLeft() {
   const now = new Date()
   const diff = new Date(WEDDING.dateISO).getTime() - now.getTime()

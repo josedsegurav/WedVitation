@@ -8,7 +8,7 @@ const BANK_ROWS = GIFTS.bank.map(({label, value}) => ({
   value
 }))
 
-console.log(BANK_ROWS)
+
 
 // Gift box — 28×28px, clean minimal linework
 function GiftIcon() {
