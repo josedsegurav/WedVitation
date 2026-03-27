@@ -38,7 +38,7 @@ async function validateInvitationToken(
 }
 
 // ── Main middleware ────────────────────────────────────────────
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── A. Invitation token gate — only on / ───────────────────
