@@ -22,7 +22,7 @@ export default function FloatingRSVP() {
           animation: floatBounce 2.8s ease-in-out infinite;
         }
         .floating-rsvp:hover {
-          box-shadow: 0 12px 36px rgba(139,105,20,0.45) !important;
+          box-shadow: 0 12px 36px rgba(var(--color-gold-dark-rgb),0.45) !important;
           opacity: 0.92 !important;
         }
       `}</style>
@@ -40,16 +40,16 @@ export default function FloatingRSVP() {
           alignItems: 'center',
           gap: 3,
           padding: '14px 22px',
-          background: 'linear-gradient(160deg, #D4A84A 0%, #8B6914 100%)',
-          color: '#FAF6F0',
+          background: 'var(--gradient-gold-btn)',
+          color: 'var(--color-btn-text)',
           fontFamily: 'inherit',
           fontSize: 10,
           letterSpacing: '0.24em',
           textTransform: 'uppercase',
           textDecoration: 'none',
           borderRadius: 2,
-          border: '1px solid rgba(255,220,140,0.25)',
-          boxShadow: '0 8px 28px rgba(139,105,20,0.32)',
+          border: '1px solid var(--color-float-border)',
+          boxShadow: '0 8px 28px rgba(var(--color-gold-dark-rgb),0.32)',
           opacity: visible ? 1 : 0,
           pointerEvents: visible ? 'auto' : 'none',
           // Entry/exit slide — only when not bouncing
@@ -60,9 +60,9 @@ export default function FloatingRSVP() {
       >
         {/* Small ring icon */}
         <svg width="16" height="10" viewBox="0 0 30 18" fill="none" style={{ marginBottom: 2 }}>
-          <circle cx="10" cy="9" r="7.5" stroke="rgba(255,240,200,0.7)" strokeWidth="1.2" fill="none"/>
-          <circle cx="20" cy="9" r="7.5" stroke="rgba(255,240,200,0.7)" strokeWidth="1.2" fill="rgba(255,255,255,0.08)"/>
-          <path d="M14 4 Q15 9 14 14" stroke="rgba(255,240,200,0.4)" strokeWidth="0.8" fill="none"/>
+          <circle cx="10" cy="9" r="7.5" stroke="var(--color-float-rings)" strokeWidth="1.2" fill="none"/>
+          <circle cx="20" cy="9" r="7.5" stroke="var(--color-float-rings)" strokeWidth="1.2" fill="var(--color-float-rings-fill)"/>
+          <path d="M14 4 Q15 9 14 14" stroke="var(--color-float-curve)" strokeWidth="0.8" fill="none"/>
         </svg>
 
         <span style={{ lineHeight: 1.3 }}>Confirm</span>
@@ -73,7 +73,7 @@ export default function FloatingRSVP() {
           width: '60%',
           height: 1,
           marginTop: 4,
-          background: 'linear-gradient(to right, transparent, rgba(255,240,200,0.5), transparent)',
+          background: 'var(--gradient-float-shimmer)',
         }}/>
       </a>
     </>

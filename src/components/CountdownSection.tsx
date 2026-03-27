@@ -1,11 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { COUPLE, WEDDING, CALENDAR_URL } from '@/app/config'
+import { WEDDING, CALENDAR_URL } from '@/app/config'
+
+
+const WEDDING_DATE = new Date(WEDDING.dateISO)
 
 function getTimeLeft() {
   const now = new Date()
-  const diff = new Date(WEDDING.dateISO).getTime() - now.getTime()
+  const diff = WEDDING_DATE.getTime() - now.getTime()
   if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 }
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -49,26 +52,26 @@ export default function CountdownSection() {
       id="countdown"
       style={{
         padding: '80px 24px 72px',
-        background: 'linear-gradient(180deg, #FAF6F0 0%, #F5EDE0 50%, #FAF6F0 100%)',
+        background: 'var(--gradient-section)',
       }}
     >
       <div style={{ maxWidth: 540, margin: '0 auto', textAlign: 'center' }}>
 
         {/* Section header */}
-        <p className="font-body uppercase" style={{ fontSize: 10, letterSpacing: '0.38em', color: '#C9A96E', marginBottom: 10 }}>
+        <p className="font-body uppercase" style={{ fontSize: 10, letterSpacing: '0.38em', color: 'var(--color-gold)', marginBottom: 10 }}>
           Until Our Big Day
         </p>
-        <h2 className="font-display font-light" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', color: '#2C2C2C', marginBottom: 6 }}>
+        <h2 className="font-display font-light" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', color: 'var(--color-heading)', marginBottom: 6 }}>
           Counting Down With Joy
         </h2>
 
         {/* Ornamental rule */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 44 }}>
-          <div style={{ width: 64, height: 1, background: 'linear-gradient(to right, transparent, #C9A96E)' }} />
+          <div style={{ width: 64, height: 1, background: 'var(--gradient-ornament-line-r)' }} />
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <polygon points="5,0 6.5,3.5 10,5 6.5,6.5 5,10 3.5,6.5 0,5 3.5,3.5" fill="#C9A96E"/>
+            <polygon points="5,0 6.5,3.5 10,5 6.5,6.5 5,10 3.5,6.5 0,5 3.5,3.5" fill="var(--color-gold)"/>
           </svg>
-          <div style={{ width: 64, height: 1, background: 'linear-gradient(to left, transparent, #C9A96E)' }} />
+          <div style={{ width: 64, height: 1, background: 'var(--gradient-ornament-line-l)' }} />
         </div>
 
         {/* Countdown boxes */}
@@ -81,10 +84,10 @@ export default function CountdownSection() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 padding: '20px 8px 16px',
-                background: 'linear-gradient(160deg, rgba(253,248,242,0.9), rgba(245,237,224,0.7))',
-                border: '1px solid rgba(201,169,110,0.28)',
+                background: 'var(--gradient-card)',
+                border: '1px solid rgba(var(--color-gold-rgb),0.28)',
                 borderRadius: 2,
-                boxShadow: '0 2px 16px rgba(139,105,20,0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
+                boxShadow: '0 2px 16px rgba(var(--color-gold-dark-rgb),0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
                 position: 'relative',
                 overflow: 'hidden',
               }}
@@ -93,26 +96,26 @@ export default function CountdownSection() {
               <span style={{
                 position: 'absolute', top: 5, left: 5,
                 width: 8, height: 8,
-                borderTop: '1px solid rgba(201,169,110,0.4)',
-                borderLeft: '1px solid rgba(201,169,110,0.4)',
+                borderTop: '1px solid rgba(var(--color-gold-rgb),0.4)',
+                borderLeft: '1px solid rgba(var(--color-gold-rgb),0.4)',
               }}/>
               <span style={{
                 position: 'absolute', top: 5, right: 5,
                 width: 8, height: 8,
-                borderTop: '1px solid rgba(201,169,110,0.4)',
-                borderRight: '1px solid rgba(201,169,110,0.4)',
+                borderTop: '1px solid rgba(var(--color-gold-rgb),0.4)',
+                borderRight: '1px solid rgba(var(--color-gold-rgb),0.4)',
               }}/>
               <span style={{
                 position: 'absolute', bottom: 5, left: 5,
                 width: 8, height: 8,
-                borderBottom: '1px solid rgba(201,169,110,0.4)',
-                borderLeft: '1px solid rgba(201,169,110,0.4)',
+                borderBottom: '1px solid rgba(var(--color-gold-rgb),0.4)',
+                borderLeft: '1px solid rgba(var(--color-gold-rgb),0.4)',
               }}/>
               <span style={{
                 position: 'absolute', bottom: 5, right: 5,
                 width: 8, height: 8,
-                borderBottom: '1px solid rgba(201,169,110,0.4)',
-                borderRight: '1px solid rgba(201,169,110,0.4)',
+                borderBottom: '1px solid rgba(var(--color-gold-rgb),0.4)',
+                borderRight: '1px solid rgba(var(--color-gold-rgb),0.4)',
               }}/>
 
               {/* Number */}
@@ -122,7 +125,7 @@ export default function CountdownSection() {
                   fontSize: 'clamp(2rem, 6vw, 2.75rem)',
                   lineHeight: 1,
                   fontWeight: 300,
-                  color: '#C9A96E',
+                  color: 'var(--color-gold)',
                   letterSpacing: '-0.02em',
                 }}
               >
@@ -130,12 +133,12 @@ export default function CountdownSection() {
               </span>
 
               {/* Thin rule */}
-              <div style={{ width: 20, height: 1, background: 'rgba(201,169,110,0.35)', margin: '8px 0 6px' }} />
+              <div style={{ width: 20, height: 1, background: 'rgba(var(--color-gold-rgb),0.35)', margin: '8px 0 6px' }} />
 
               {/* Label */}
               <span
                 className="font-body uppercase"
-                style={{ fontSize: 9, letterSpacing: '0.2em', color: '#8B6914', opacity: 0.8 }}
+                style={{ fontSize: 9, letterSpacing: '0.2em', color: 'var(--color-gold-dark)', opacity: 0.8 }}
               >
                 {label}
               </span>
@@ -145,11 +148,11 @@ export default function CountdownSection() {
 
         {/* Separator between counter and CTA */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
-          <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,169,110,0.3))' }} />
-          <span className="font-body uppercase" style={{ fontSize: 9, letterSpacing: '0.3em', color: '#C9A96E', opacity: 0.7 }}>
+          <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(var(--color-gold-rgb),0.3))' }} />
+          <span className="font-body uppercase" style={{ fontSize: 9, letterSpacing: '0.3em', color: 'var(--color-gold)', opacity: 0.7 }}>
             {WEDDING.dateDisplay} · {WEDDING.location}
           </span>
-          <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,169,110,0.3))' }} />
+          <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(var(--color-gold-rgb),0.3))' }} />
         </div>
 
         {/* Calendar CTA */}
@@ -165,21 +168,21 @@ export default function CountdownSection() {
             padding: '11px 28px',
             fontSize: 10,
             letterSpacing: '0.22em',
-            color: '#8B6914',
-            border: '1px solid rgba(201,169,110,0.5)',
+            color: 'var(--color-gold-dark)',
+            border: '1px solid rgba(var(--color-gold-rgb),0.5)',
             borderRadius: 1,
-            background: 'rgba(201,169,110,0.06)',
+            background: 'rgba(var(--color-gold-rgb),0.06)',
             transition: 'background 0.2s, box-shadow 0.2s',
             textDecoration: 'none',
           }}
           onMouseEnter={e => {
             const el = e.currentTarget
-            el.style.background = 'rgba(201,169,110,0.14)'
-            el.style.boxShadow = '0 4px 18px rgba(139,105,20,0.12)'
+            el.style.background = 'rgba(var(--color-gold-rgb),0.14)'
+            el.style.boxShadow = '0 4px 18px rgba(var(--color-gold-dark-rgb),0.12)'
           }}
           onMouseLeave={e => {
             const el = e.currentTarget
-            el.style.background = 'rgba(201,169,110,0.06)'
+            el.style.background = 'rgba(var(--color-gold-rgb),0.06)'
             el.style.boxShadow = 'none'
           }}
         >

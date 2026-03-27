@@ -2,77 +2,177 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme tokens (defaults match theme.config.ts WARM GOLD) ───
+   These are overwritten at runtime by the <style> tag injected
+   in layout.tsx from theme.config.ts — edit that file instead. */
 :root {
-  --cream: #FAF6F0;
-  --gold: #C9A96E;
-  --gold-light: #E8D5B0;
-  --blush: #F2DDD5;
-  --sage: #A8B5A2;
-  --charcoal: #2C2C2C;
+  /* Font name variables — plain names only, no quotes, no fallbacks.
+     Used by the .font-* utility classes below via a CSS hack:
+     font-family: var(--font-display-name), serif
+     does NOT work reliably because CSS vars can't span comma-separated stacks.
+     So .font-* classes use hardcoded stacks that are updated by JS when the
+     theme changes — see globals.css font section below. */
+
+  /* Backgrounds */
+  --color-page-bg:      #FAF6F0;
+  --color-section-mid:  #F5EDE0;
+  --color-section-end:  #EDE0CC;
+  --color-dark-bg:      #1C1C1C;
+  --color-dark-bg-mid:  #242424;
+
+  /* Card */
+  --color-card-from:    rgba(253,248,242,0.95);
+  --color-card-to:      rgba(245,237,224,0.8);
+
+  /* Accent (gold) */
+  --color-gold:         #C9A96E;
+  --color-gold-light:   #E8D5B0;
+  --color-gold-dark:    #8B6914;
+
+  /* Text */
+  --color-heading:      #2C2C2C;
+  --color-body:         #5C4A2A;
+  --color-muted:        #8B6914;
+
+  /* Semantic */
+  --color-btn-text:     #FAF6F0;
+  --color-heading-light:#F5EDE0;
+
+  /* Derived gradients (rebuilt by applyTheme when tokens change) */
+  --gradient-section:   linear-gradient(180deg, var(--color-page-bg) 0%, var(--color-section-mid) 50%, var(--color-page-bg) 100%);
+  --gradient-card:      linear-gradient(160deg, var(--color-card-from), var(--color-card-to));
+  --gradient-gold:      linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 50%, var(--color-gold-dark) 100%);
+  --gradient-gold-btn:  linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+  --gradient-dark:      linear-gradient(180deg, var(--color-dark-bg) 0%, var(--color-dark-bg-mid) 50%, var(--color-dark-bg) 100%);
+  --gradient-footer:    linear-gradient(180deg, var(--color-section-mid) 0%, var(--color-section-end) 100%);
+
+  /* Dark card surface (DressCodeSection inner cards) */
+  --gradient-dark-card:     linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+
+  /* Portrait medallion overlay (FooterSection) */
+  --gradient-portrait-overlay: radial-gradient(circle, transparent 35%, rgba(44,20,4,0.35) 100%);
+
+  /* FloatingRSVP shimmer bar */
+  --gradient-float-shimmer: linear-gradient(to right, transparent, var(--color-float-shimmer), transparent);
+
+  /* Gallery placeholder gradients — tinted from gold palette */
+  --gradient-gallery-0: linear-gradient(160deg, var(--color-gold-dark), color-mix(in srgb, var(--color-gold-dark) 70%, black));
+  --gradient-gallery-1: linear-gradient(160deg, color-mix(in srgb, var(--color-gold) 70%, #604020), color-mix(in srgb, var(--color-gold-dark) 60%, black));
+  --gradient-gallery-2: linear-gradient(160deg, var(--color-gold-light), var(--color-gold));
+  --gradient-gallery-3: linear-gradient(160deg, color-mix(in srgb, var(--color-gold) 55%, gray), color-mix(in srgb, var(--color-gold-dark) 50%, gray));
+  --gradient-gallery-4: linear-gradient(160deg, var(--color-gold), var(--color-gold-dark));
+  --gradient-gallery-5: linear-gradient(160deg, color-mix(in srgb, var(--color-gold) 80%, gray), color-mix(in srgb, var(--color-gold-dark) 70%, gray));
+
+  /* Border / ornament */
+  --color-border:       rgba(201,169,110,0.28);
+  --color-border-light: rgba(201,169,110,0.18);
+  --color-ornament:     rgba(201,169,110,0.4);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--cream);
-  color: var(--charcoal);
+  background-color: var(--color-page-bg);
+  color: var(--color-heading);
+  font-family: 'Jost', system-ui, sans-serif; /* overridden by theme <style> block */
   overflow-x: hidden;
 }
 
-/* Decorative dividers */
+/* ── Font utility classes ──────────────────────────────────── */
+/* Font utility classes — overridden by the theme <style> block in layout.tsx
+   These defaults ensure fonts work even if JS hasn't run yet */
+.font-display { font-family: 'Cormorant Garamond', Georgia, serif !important; }
+.font-script  { font-family: 'Great Vibes', cursive !important; }
+.font-body    { font-family: 'Jost', system-ui, sans-serif !important; }
+
+/* ── Gold gradient text ────────────────────────────────────── */
+.gold-text {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Ornament divider ──────────────────────────────────────── */
 .ornament-divider {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin: 2rem auto;
 }
-
 .ornament-divider::before,
 .ornament-divider::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  background: linear-gradient(to right, transparent, var(--color-gold), transparent);
 }
 
-/* Gold gradient text */
-.gold-text {
-  background: linear-gradient(135deg, #C9A96E 0%, #E8D5B0 50%, #8B6914 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ── Section reveal ────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Envelope animation */
+/* ── Envelope ──────────────────────────────────────────────── */
 .envelope-lid {
   transform-origin: top center;
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-.envelope-open .envelope-lid {
-  transform: rotateX(-180deg);
-}
-
+.envelope-open .envelope-lid { transform: rotateX(-180deg); }
 .invitation-card {
   transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
 }
-
 .envelope-open .invitation-card {
   transform: translateY(-60%);
   opacity: 1;
 }
 
-/* Petal particles */
+/* ── Countdown box ─────────────────────────────────────────── */
+.countdown-box {
+  background: linear-gradient(135deg,
+    rgba(var(--color-gold-rgb, 201,169,110), 0.15),
+    rgba(var(--color-gold-light-rgb, 232,213,176), 0.1));
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Timeline ──────────────────────────────────────────────── */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--color-gold), transparent);
+  transform: translateX(-50%);
+}
+
+/* ── Gallery grid ──────────────────────────────────────────── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  gap: 8px;
+}
+.gallery-grid .item-0 { grid-column: 1 / 3; grid-row: 1 / 3; }
+.gallery-grid .item-1 { grid-column: 3;     grid-row: 1;     }
+.gallery-grid .item-2 { grid-column: 3;     grid-row: 2;     }
+.gallery-grid .item-3 { grid-column: 1;     grid-row: 3;     }
+.gallery-grid .item-4 { grid-column: 2;     grid-row: 3;     }
+.gallery-grid .item-5 { grid-column: 3;     grid-row: 3;     }
+
+/* ── Petal ─────────────────────────────────────────────────── */
 .petal {
   position: fixed;
-  width: 12px;
-  height: 8px;
+  width: 12px; height: 8px;
   border-radius: 50% 50% 50% 0;
   opacity: 0;
   animation: petalFall linear infinite;
@@ -80,60 +180,21 @@ body {
   z-index: 9999;
 }
 
-/* Section reveal animation */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
+/* ── Floating RSVP ─────────────────────────────────────────── */
+.floating-rsvp-btn {
+  background: var(--gradient-gold-btn) !important;
+  box-shadow: 0 12px 36px rgba(139,105,20,0.45) !important;
 }
 
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Timeline */
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
-  transform: translateX(-50%);
-}
-
-/* Gallery grid */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
-  gap: 8px;
-}
-
-.gallery-grid .item-0 { grid-column: 1 / 3; grid-row: 1 / 3; }
-.gallery-grid .item-1 { grid-column: 3; grid-row: 1; }
-.gallery-grid .item-2 { grid-column: 3; grid-row: 2; }
-.gallery-grid .item-3 { grid-column: 1; grid-row: 3; }
-.gallery-grid .item-4 { grid-column: 2; grid-row: 3; }
-.gallery-grid .item-5 { grid-column: 3; grid-row: 3; }
-
-/* Countdown */
-.countdown-box {
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.15), rgba(232, 213, 176, 0.1));
-  border: 1px solid rgba(201, 169, 110, 0.3);
-  backdrop-filter: blur(4px);
-}
-
-/* Scrollbar */
+/* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--color-page-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-gold-light); border-radius: 3px; }
 
+/* ── Keyframes ─────────────────────────────────────────────── */
 @keyframes petalFall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.4; }
+  0%   { transform: translateY(-20px) rotate(0deg);                   opacity: 0;   }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.4; }
   100% { transform: translateY(105vh) rotate(720deg) translateX(60px); opacity: 0; }
 }

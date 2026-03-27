@@ -2,7 +2,20 @@
 
 import { useEffect, useRef } from 'react'
 
-const COLORS = ['#F2DDD5', '#E8C8B0', '#D4A8B0', '#C9A96E', '#F0E0D0']
+// Petal colours come from THEME.colors.petals in theme.config.ts.
+// layout.tsx injects them as --color-petal-0, --color-petal-1, … into :root.
+// We read them at mount time so they always match the active theme.
+function getPetalColors(): string[] {
+  const fallback = ['#F2DDD5','#E8C8B0','#D4A8B0','#C9A96E','#F0E0D0']
+  if (typeof window === 'undefined') return fallback
+  const style = getComputedStyle(document.documentElement)
+  const colors: string[] = []
+  for (let i = 0; i < 8; i++) {
+    const val = style.getPropertyValue(`--color-petal-${i}`).trim()
+    if (val) colors.push(val)
+  }
+  return colors.length > 0 ? colors : fallback
+}
 
 export default function PetalParticles() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -11,15 +24,16 @@ export default function PetalParticles() {
     const container = containerRef.current
     if (!container) return
 
+    const COLORS = getPetalColors()
     const petals: HTMLElement[] = []
 
     for (let i = 0; i < 12; i++) {
-      const petal = document.createElement('div')
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)]
-      const size = Math.random() * 10 + 6
-      const left = Math.random() * 100
-      const delay = Math.random() * 10
-      const duration = Math.random() * 8 + 8
+      const petal       = document.createElement('div')
+      const color       = COLORS[Math.floor(Math.random() * COLORS.length)]
+      const size        = Math.random() * 10 + 6
+      const left        = Math.random() * 100
+      const delay       = Math.random() * 10
+      const duration    = Math.random() * 8 + 8
 
       petal.style.cssText = `
         position: fixed;
@@ -41,9 +55,7 @@ export default function PetalParticles() {
       petals.push(petal)
     }
 
-    return () => {
-      petals.forEach(p => p.remove())
-    }
+    return () => { petals.forEach(p => p.remove()) }
   }, [])
 
   return <div ref={containerRef} className="pointer-events-none" />
