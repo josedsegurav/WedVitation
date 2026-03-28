@@ -1,14 +1,11 @@
 // app/api/guest/route.ts
 // GET /api/guest?token=tok_xxxx
 //
-// Called by the invitation page (WeddingClient) to get guest data
-// after the middleware has already validated the token.
-// Uses the server client — the session cookie is not required here
-// since guests are never logged in. The anon key + RLS allows
-// reading a guest row when the token matches.
+// Uses get_guest_by_token() RPC (security definer) to bypass RLS.
+// Called by WeddingClient after middleware has already validated the token.
 
-import { NextResponse }  from 'next/server'
-import { createClient }  from '@/lib/supabase/server'
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: Request) {
   const token = new URL(request.url).searchParams.get('token')
@@ -19,14 +16,19 @@ export async function GET(request: Request) {
 
   const supabase = await createClient()
 
-  const { data: guest, error } = await supabase
-    .from('guests')
-    .select('name, passes')
-    .eq('token', token)
-    .is('deleted_at', null)
-    .single()
+  const { data, error } = await supabase.rpc('get_guest_by_token', {
+    p_token: token,
+  })
 
-  if (error || !guest) {
+  if (error) {
+    console.error('[GET /api/guest]', error.message)
+    return NextResponse.json({ error: 'Guest not found' }, { status: 404 })
+  }
+
+  // RPC returns array for table-returning functions
+  const guest = Array.isArray(data) ? data[0] : data
+
+  if (!guest) {
     return NextResponse.json({ error: 'Guest not found' }, { status: 404 })
   }
 
