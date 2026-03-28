@@ -2,43 +2,52 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // ── Public routes — no auth required ──────────────────────────
-// These are either guest-facing (token-gated separately) or
-// auth routes themselves. Everything else requires a session.
-const PUBLIC_ROUTES = [
-  '/locked',          // shown when invitation token is invalid
-  '/auth',            // login page + callback (prefix match)
-  '/api/guest',       // guest lookup by token (invitation middleware)
-  '/api/rsvp',        // RSVP submission by guests
+const PUBLIC_PREFIXES = [
+  '/locked',
+  '/auth',
+  '/api/guest',
+  '/api/rsvp',
 ]
 
 function isPublic(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'))
+  return PUBLIC_PREFIXES.some(p => pathname === p || pathname.startsWith(p + '/'))
 }
 
-// ── Invitation token gate (runs on / only) ────────────────────
-// Validates the ?token= param against Supabase guests table.
-// Uses a direct fetch to the Supabase REST API so this works
-// on the Edge runtime without the full supabase-js client.
+// ── Invitation token gate ─────────────────────────────────────
+// Calls the get_guest_by_token() Postgres function via the REST API.
+// This function is security definer so it bypasses RLS — safe because
+// it only returns name + passes for a matching token.
 async function validateInvitationToken(
   token: string
 ): Promise<{ name: string; passes: number } | null> {
-  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/guests?token=eq.${encodeURIComponent(token)}&deleted_at=is.null&select=name,passes&limit=1`
+  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/get_guest_by_token`
 
   const res = await fetch(url, {
+    method: 'POST',
     headers: {
-      apikey:        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!}`,
+      'Content-Type':  'application/json',
+      'apikey':        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+      'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!}`,
+      // Prevent Edge/CDN caching — every token check must hit Supabase
+      'Cache-Control': 'no-store',
     },
+    body: JSON.stringify({ p_token: token }),
+    // Next.js fetch cache — opt out completely
+    cache: 'no-store',
   })
 
-  if (!res.ok) return null
+  if (!res.ok) {
+    console.error('[middleware] token validation failed:', res.status, await res.text())
+    return null
+  }
 
+  // RPC returns an array for table-returning functions
   const rows = await res.json() as { name: string; passes: number }[]
-  return rows[0] ?? null
+  return rows?.[0] ?? null
 }
 
 // ── Main middleware ────────────────────────────────────────────
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── A. Invitation token gate — only on / ───────────────────
@@ -47,23 +56,26 @@ export async function proxy(request: NextRequest) {
     const guest = token ? await validateInvitationToken(token) : null
 
     if (!guest) {
-      return NextResponse.rewrite(new URL('/locked', request.url))
+      const lockedUrl = new URL('/locked', request.url)
+      const response  = NextResponse.rewrite(lockedUrl)
+      // Prevent caching of locked responses
+      response.headers.set('Cache-Control', 'no-store')
+      return response
     }
 
     const response = NextResponse.next()
     response.headers.set('x-guest-name',   guest.name)
     response.headers.set('x-guest-passes', String(guest.passes))
+    response.headers.set('Cache-Control',  'no-store')
     return response
   }
 
-  // ── B. Public routes — just pass through ───────────────────
+  // ── B. Public routes — pass through ────────────────────────
   if (isPublic(pathname)) {
     return NextResponse.next()
   }
 
-  // ── C. All other routes — refresh session + auth check ─────
-  // Must follow the @supabase/ssr cookie pattern exactly.
-  // Do NOT put any logic between createServerClient and getClaims().
+  // ── C. Protected routes — session refresh + auth check ─────
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -87,32 +99,22 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Do not run code between createServerClient and getClaims()
+  // IMPORTANT: Do not put any code between createServerClient and getClaims()
   const { data } = await supabase.auth.getClaims()
   const user = data?.claims
 
-  // No session → redirect to login
   if (!user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/auth/login'
-    // Preserve the intended destination so we can redirect back after login
     loginUrl.searchParams.set('next', pathname)
     return NextResponse.redirect(loginUrl)
   }
 
-  // IMPORTANT: return supabaseResponse to keep cookies in sync
   return supabaseResponse
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all paths except:
-     * - _next/static  (static files)
-     * - _next/image   (image optimisation)
-     * - favicon.ico, sitemap.xml, robots.txt
-     * - image files
-     */
-    '/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon\.ico|sitemap\.xml|robots\.txt|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
