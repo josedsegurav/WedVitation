@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 // ── Public routes — no auth required ──────────────────────────
 const PUBLIC_PREFIXES = [
+  '/home',
   '/locked',
   '/auth',
   '/api/guest',
@@ -56,9 +57,13 @@ export async function proxy(request: NextRequest) {
     const guest = token ? await validateInvitationToken(token) : null
 
     if (!guest) {
+      // No token — show the product landing page
+      if (!token) {
+        return NextResponse.redirect(new URL('/home', request.url))
+      }
+      // Invalid token — show the locked page
       const lockedUrl = new URL('/locked', request.url)
       const response  = NextResponse.rewrite(lockedUrl)
-      // Prevent caching of locked responses
       response.headers.set('Cache-Control', 'no-store')
       return response
     }

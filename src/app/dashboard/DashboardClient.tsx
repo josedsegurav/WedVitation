@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback, type CSSProperties } from 'react'
+import ThemePicker from './ThemePicker'
 
 // ─── types ────────────────────────────────────────────────────
 type GuestStatus = 'confirmed' | 'pending' | 'declined'
@@ -20,6 +21,7 @@ type Props = {
   initialGuests:    Guest[]
   coupleName:       string
   initialTemplate:  string
+  initialThemeId:   string
   baseUrl:          string
 }
 
@@ -210,10 +212,11 @@ export default function DashboardClient({
   initialGuests,
   coupleName,
   initialTemplate,
+  initialThemeId,
   baseUrl,
 }: Props) {
   const isMobile = useIsMobile()
-console.log(baseUrl)
+
   const mkLink = useCallback((token: string) => `${baseUrl}/?token=${token}`, [baseUrl])
 
   const DEFAULT_TEMPLATE = `Hola {name} 🌸
@@ -358,6 +361,7 @@ Confirma tu asistencia aquí:
     { key: 'guests',   label: isMobile ? 'Guests'   : 'Guest List'         },
     { key: 'create',   label: isMobile ? 'New'      : 'New Invitation'     },
     { key: 'template', label: isMobile ? 'Template' : 'WhatsApp Template'  },
+    { key: 'theme',    label: isMobile ? 'Theme'    : 'Invitation Theme'   },
   ]
 
   const FILTERS = [
@@ -424,11 +428,7 @@ Confirma tu asistencia aquí:
                 Seating
               </a>
             </div>
-            <a href="/" style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: '#8B6914', textDecoration: 'none', opacity: 0.55,
-              border: '1px solid rgba(201,169,110,0.3)', padding: '5px 10px', borderRadius: 1 }}>
-              ← {isMobile ? 'Back' : 'Invitation'}
-            </a>
+
           </div>
         </header>
 
@@ -716,6 +716,15 @@ Confirma tu asistencia aquí:
                 </div>
               </div>
             </div>
+          )}
+
+          {/* ══ INVITATION THEME ════════════════════════════ */}
+          {tab === 'theme' && (
+            <ThemePicker
+              currentThemeId={initialThemeId || 'warm-gold'}
+              card={card}
+              isMobile={isMobile}
+            />
           )}
 
         </main>
