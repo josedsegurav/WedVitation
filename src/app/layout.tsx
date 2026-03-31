@@ -3,7 +3,7 @@ import './globals.css'
 import { THEME } from './theme.config'
 
 export const metadata: Metadata = {
-  title: `${THEME.fonts.display ? '' : ''}Sofia & Marco • Wedding Invitation`,
+  title: `${THEME.fonts.display ? '' : ''}WedVitation • Online Wedding Invitation`,
   description: 'You are invited to celebrate our love',
 }
 

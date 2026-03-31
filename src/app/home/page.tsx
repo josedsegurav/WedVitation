@@ -167,7 +167,7 @@ export default function LandingPage() {
             color: 'var(--color-heading)',
           }}>wedvitation</span>
         </div>
-        <button
+        {/* <button
           onClick={() => router.push('/auth/login')}
           style={{
             padding: '8px 20px', fontSize: 10, letterSpacing: '0.2em',
@@ -186,7 +186,7 @@ export default function LandingPage() {
           }}
         >
           Sign In
-        </button>
+        </button> */}
       </nav>
 
       {/* ── HERO ────────────────────────────────────────────── */}

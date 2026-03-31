@@ -39,13 +39,9 @@ export default async function SeatingPage() {
   // ── 3. Fetch seating state + wedding name ──────────────────
   const [seatingResult, weddingResult] = await Promise.all([
     supabase.rpc('get_my_seating'),
-    supabase
-      .from('weddings')
-      .select('couple_names, venue_label')
-      .eq('id', weddingId)
-      .single(),
+    supabase.rpc('get_my_wedding'),
   ])
-
+console.log(weddingResult.data)
   // get_my_seating returns a single JSON object
   const raw      = seatingResult.data as {
     tables:  { id: string; name: string; seats: number; x: number; y: number }[]
@@ -61,7 +57,9 @@ export default async function SeatingPage() {
   const assignedIds = new Set(Object.values(assign).flat())
   const unassigned  = guests.filter(g => !assignedIds.has(g.id)).map(g => g.id)
 
-  const wedding = weddingResult.data
+  const wedding = Array.isArray(weddingResult.data)
+    ? weddingResult.data[0]
+    : weddingResult.data
 
   return (
     <SeatingClient
