@@ -585,7 +585,7 @@ export default function LandingPage() {
               ;(e.target as HTMLButtonElement).style.boxShadow = '0 4px 24px rgba(201,169,110,0.4)'
             }}
           >
-            Create Your Invitation — Free
+            Create Your Invitation
           </button>
         </div>
       </section>
