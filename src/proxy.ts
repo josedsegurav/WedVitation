@@ -68,9 +68,14 @@ export async function proxy(request: NextRequest) {
       return response
     }
 
+    if (!token) {
+      return NextResponse.redirect(new URL('/home', request.url))
+    }
+
     const response = NextResponse.next()
     response.headers.set('x-guest-name',   guest.name)
     response.headers.set('x-guest-passes', String(guest.passes))
+    response.headers.set('x-guest-token',  token)
     response.headers.set('Cache-Control',  'no-store')
     return response
   }

@@ -71,7 +71,11 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* font-size: larger; */
+
+}
 
 body {
   background-color: var(--color-page-bg);

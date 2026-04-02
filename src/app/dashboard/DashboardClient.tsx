@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback, type CSSProperties } from 'react'
-import ThemePicker from './ThemePicker'
+import ThemePicker       from './ThemePicker'
+import InvitationEditor  from './InvitationEditor'
+import GalleryManager    from './GalleryManager'
+import type { WeddingData } from '@/lib/types'
 
 // ─── types ────────────────────────────────────────────────────
 type GuestStatus = 'confirmed' | 'pending' | 'declined'
@@ -22,6 +25,7 @@ type Props = {
   coupleName:       string
   initialTemplate:  string
   initialThemeId:   string
+  initialData:      WeddingData | null
   baseUrl:          string
 }
 
@@ -213,10 +217,11 @@ export default function DashboardClient({
   coupleName,
   initialTemplate,
   initialThemeId,
+  initialData,
   baseUrl,
 }: Props) {
   const isMobile = useIsMobile()
-
+console.log(baseUrl)
   const mkLink = useCallback((token: string) => `${baseUrl}/?token=${token}`, [baseUrl])
 
   const DEFAULT_TEMPLATE = `Hola {name} 🌸
@@ -362,6 +367,8 @@ Confirma tu asistencia aquí:
     { key: 'create',   label: isMobile ? 'New'      : 'New Invitation'     },
     { key: 'template', label: isMobile ? 'Template' : 'WhatsApp Template'  },
     { key: 'theme',    label: isMobile ? 'Theme'    : 'Invitation Theme'   },
+    { key: 'settings', label: isMobile ? 'Edit'     : 'Edit Invitation'    },
+    { key: 'gallery',  label: isMobile ? 'Gallery'  : 'Gallery'            },
   ]
 
   const FILTERS = [
@@ -428,7 +435,11 @@ Confirma tu asistencia aquí:
                 Seating
               </a>
             </div>
-
+            <a href="/" style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+              color: '#8B6914', textDecoration: 'none', opacity: 0.55,
+              border: '1px solid rgba(201,169,110,0.3)', padding: '5px 10px', borderRadius: 1 }}>
+              ← {isMobile ? 'Back' : 'Invitation'}
+            </a>
           </div>
         </header>
 
@@ -723,6 +734,26 @@ Confirma tu asistencia aquí:
             <ThemePicker
               currentThemeId={initialThemeId || 'warm-gold'}
               card={card}
+              isMobile={isMobile}
+            />
+          )}
+
+          {/* ══ EDIT INVITATION ══════════════════════════════ */}
+          {tab === 'settings' && initialData && (
+            <InvitationEditor data={initialData} isMobile={isMobile} />
+          )}
+          {tab === 'settings' && !initialData && (
+            <div style={{ ...card, padding: '32px', textAlign: 'center' }}>
+              <p style={{ fontSize: 12, color: '#8B6914', opacity: 0.6 }}>
+                Wedding data could not be loaded. Please refresh the page.
+              </p>
+            </div>
+          )}
+
+          {/* ══ GALLERY ══════════════════════════════════════ */}
+          {tab === 'gallery' && (
+            <GalleryManager
+              initialPhotos={initialData?.gallery ?? []}
               isMobile={isMobile}
             />
           )}

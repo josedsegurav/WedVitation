@@ -1,22 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import EnvelopeOpener from '@/components/EnvelopeOpener'
-import HeroSection from '@/components/HeroSection'
-import CountdownSection from '@/components/CountdownSection'
-import ParentsSection from '@/components/ParentsSection'
-import EventSection from '@/components/EventSection'
-import DressCodeSection from '@/components/DressCodeSection'
-import GallerySection from '@/components/GallerySection'
-import ItinerarySection from '@/components/ItinerarySection'
-import GiftSection from '@/components/GiftSection'
-import RSVPSection from '@/components/RSVPSection'
-import FooterSection from '@/components/FooterSection'
-import FloatingRSVP from '@/components/FloatingRSVP'
-import PetalParticles from '@/components/PetalParticles'
+import EnvelopeOpener    from '@/components/EnvelopeOpener'
+import HeroSection       from '@/components/HeroSection'
+import CountdownSection  from '@/components/CountdownSection'
+import ParentsSection    from '@/components/ParentsSection'
+import EventSection      from '@/components/EventSection'
+import DressCodeSection  from '@/components/DressCodeSection'
+import GallerySection    from '@/components/GallerySection'
+import ItinerarySection  from '@/components/ItinerarySection'
+import GiftSection       from '@/components/GiftSection'
+import RSVPSection       from '@/components/RSVPSection'
+import FooterSection     from '@/components/FooterSection'
+import FloatingRSVP      from '@/components/FloatingRSVP'
+import PetalParticles    from '@/components/PetalParticles'
+import type { WeddingData } from '@/lib/types'
 
 interface GuestData {
-  name: string
+  name:   string
   passes: number
 }
 
@@ -26,7 +27,16 @@ function firstName(full: string) {
   return full.split(' ')[0]
 }
 
-function GreetingOverlay({ guest, onContinue }: { guest: GuestData; onContinue: () => void }) {
+// ─── Greeting overlay ──────────────────────────────────────────
+function GreetingOverlay({
+  guest,
+  coupleNames,
+  onContinue,
+}: {
+  guest:       GuestData
+  coupleNames: string
+  onContinue:  () => void
+}) {
   const [visible, setVisible] = useState(false)
   const [leaving, setLeaving] = useState(false)
 
@@ -47,10 +57,6 @@ function GreetingOverlay({ guest, onContinue }: { guest: GuestData; onContinue: 
       transition: leaving ? 'opacity 0.7s ease, transform 0.7s ease' : 'opacity 0.8s ease',
       fontFamily: "'Jost', sans-serif",
     }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400&family=Great+Vibes&display=swap');
-      `}</style>
-
       {/* ambient glow blobs */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
         {[
@@ -89,7 +95,6 @@ function GreetingOverlay({ guest, onContinue }: { guest: GuestData; onContinue: 
           You are warmly invited
         </p>
 
-        {/* Guest name */}
         <h1 style={{
           fontFamily: "'Great Vibes', cursive",
           fontSize: 'clamp(3rem, 10vw, 4.8rem)',
@@ -125,7 +130,7 @@ function GreetingOverlay({ guest, onContinue }: { guest: GuestData; onContinue: 
           fontSize: 'clamp(1rem, 2.5vw, 1.15rem)',
           color: 'var(--color-body)', lineHeight: 1.85, marginBottom: 10, opacity: 0.9,
         }}>
-          With great joy, Sofia &amp; Marco request the pleasure of your company
+          With great joy, {coupleNames} request the pleasure of your company
           <br />to celebrate their wedding day.
         </p>
 
@@ -171,10 +176,17 @@ function GreetingOverlay({ guest, onContinue }: { guest: GuestData; onContinue: 
   )
 }
 
-export default function WeddingClient({ guest }: { guest: GuestData }) {
+// ─── Main ──────────────────────────────────────────────────────
+export default function WeddingClient({
+  guest,
+  weddingData,
+}: {
+  guest:       GuestData
+  weddingData: WeddingData | null
+}) {
   const [stage,       setStage]       = useState<Stage>('greeting')
   const [showContent, setShowContent] = useState(false)
-
+console.log(weddingData)
   useEffect(() => {
     if (!showContent) return
     const observer = new IntersectionObserver(
@@ -185,8 +197,16 @@ export default function WeddingClient({ guest }: { guest: GuestData }) {
     return () => observer.disconnect()
   }, [showContent])
 
+  const w = weddingData?.wedding
+
   if (stage === 'greeting') {
-    return <GreetingOverlay guest={guest} onContinue={() => setStage('envelope')} />
+    return (
+      <GreetingOverlay
+        guest={guest}
+        coupleNames={w?.couple_names ?? 'the happy couple'}
+        onContinue={() => setStage('envelope')}
+      />
+    )
   }
 
   if (stage === 'envelope') {
@@ -203,16 +223,16 @@ export default function WeddingClient({ guest }: { guest: GuestData }) {
   return (
     <div style={{ minHeight: '100vh', opacity: showContent ? 1 : 0, transition: 'opacity 1s ease' }}>
       <PetalParticles />
-      <HeroSection />
-      <CountdownSection />
-      <ParentsSection />
-      <EventSection />
-      <DressCodeSection />
-      <GallerySection />
-      <ItinerarySection />
-      <GiftSection />
-      <RSVPSection />
-      <FooterSection />
+      <HeroSection       wedding={w} />
+      <CountdownSection  wedding={w} />
+      <ParentsSection    families={weddingData?.families ?? []} />
+      <EventSection      events={weddingData?.events ?? []} />
+      <DressCodeSection  dressCode={weddingData?.dress_code ?? null} />
+      <GallerySection    gallery={weddingData?.gallery ?? []} wedding={w} />
+      <ItinerarySection  itinerary={weddingData?.itinerary ?? []} />
+      <GiftSection       gifts={weddingData?.gifts ?? null} />
+      <RSVPSection       rsvpDeadline={w?.rsvp_deadline ?? ''} />
+      <FooterSection     wedding={w} />
       <FloatingRSVP />
     </div>
   )
