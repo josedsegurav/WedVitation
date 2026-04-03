@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback, type CSSProperties } from 'react'
+import { useRouter } from 'next/navigation'
 import ThemePicker       from './ThemePicker'
 import InvitationEditor  from './InvitationEditor'
 import GalleryManager    from './GalleryManager'
+import { createClient }  from '@/lib/supabase/client'
 import type { WeddingData } from '@/lib/types'
 
 // ─── types ────────────────────────────────────────────────────
@@ -25,6 +27,7 @@ type Props = {
   coupleName:       string
   initialTemplate:  string
   initialThemeId:   string
+  isPremium:        boolean
   initialData:      WeddingData | null
   baseUrl:          string
 }
@@ -217,10 +220,18 @@ export default function DashboardClient({
   coupleName,
   initialTemplate,
   initialThemeId,
+  isPremium,
   initialData,
   baseUrl,
 }: Props) {
+  const router   = useRouter()
   const isMobile = useIsMobile()
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/auth/login')
+  }
 console.log(baseUrl)
   const mkLink = useCallback((token: string) => `${baseUrl}/?token=${token}`, [baseUrl])
 
@@ -245,6 +256,10 @@ Confirma tu asistencia aquí:
   const [nf,      setNf]      = useState({ name: '', phone: '', email: '', passes: '1' })
   const [msg,     setMsg]     = useState('')
   const [creating,setCreating]= useState(false)
+
+  const FREE_LIMIT  = 5
+  const guestsLeft  = isPremium ? null : Math.max(0, FREE_LIMIT - guests.length)
+  const atFreeLimit = !isPremium && guests.length >= FREE_LIMIT
 
   const st = useMemo(() => {
     const conf = guests.filter(g => g.status === 'confirmed')
@@ -296,7 +311,12 @@ Confirma tu asistencia aquí:
       const data = await res.json()
 
       if (!res.ok) {
-        setMsg(data.error ?? 'Failed to create guest.')
+        const errMsg = data.error?.message ?? data.error ?? 'Failed to create guest.'
+        if (typeof errMsg === 'string' && errMsg.includes('free_limit_reached')) {
+          setMsg("You've reached the 5-guest free limit. Contact us to unlock unlimited guests.")
+        } else {
+          setMsg(errMsg)
+        }
         return
       }
 
@@ -429,21 +449,91 @@ Confirma tu asistencia aquí:
                     color: '#8B6914', opacity: 0.65 }}>Wedding Dashboard</span>
                 </>
               )}
-              <a href="/seating" style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: '#8B6914', textDecoration: 'none', opacity: 0.5,
-                border: '1px solid rgba(201,169,110,0.3)', padding: '5px 12px', borderRadius: 1 }}>
-                Seating
-              </a>
+              {isPremium ? (
+                <a href="/seating" style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+                  color: '#8B6914', textDecoration: 'none', opacity: 0.5,
+                  border: '1px solid rgba(201,169,110,0.3)', padding: '5px 12px', borderRadius: 1 }}>
+                  Seating
+                </a>
+              ) : (
+                <span title="Unlock unlimited guests to access the seating planner"
+                  style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+                  color: '#8B6914', opacity: 0.3, cursor: 'not-allowed',
+                  border: '1px solid rgba(201,169,110,0.2)', padding: '5px 12px', borderRadius: 1,
+                  display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  🔒 Seating
+                </span>
+              )}
             </div>
-            <a href="/" style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: '#8B6914', textDecoration: 'none', opacity: 0.55,
-              border: '1px solid rgba(201,169,110,0.3)', padding: '5px 10px', borderRadius: 1 }}>
-              ← {isMobile ? 'Back' : 'Invitation'}
-            </a>
+            <button
+              onClick={handleLogout}
+              style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+                fontFamily: 'inherit', cursor: 'pointer',
+                color: '#8B6914', opacity: 0.55, background: 'none',
+                border: '1px solid rgba(201,169,110,0.3)', padding: '5px 10px', borderRadius: 1,
+                transition: 'opacity 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '0.55')}
+            >
+              {isMobile ? 'Exit' : 'Log out'}
+            </button>
           </div>
         </header>
 
         <main style={{ maxWidth: 1140, margin: '0 auto', padding: mainPad }}>
+
+          {/* ── Free plan banner ── */}
+          {!isPremium && (
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              flexWrap: 'wrap', gap: 10,
+              padding: '12px 16px', marginBottom: isMobile ? 16 : 20,
+              background: 'rgba(201,169,110,0.07)',
+              border: '1px solid rgba(201,169,110,0.28)',
+              borderRadius: 2,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                {/* Progress bar */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <p style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#8B6914' }}>
+                    Free Plan · {guests.length} / {FREE_LIMIT} guests used
+                  </p>
+                  <div style={{ width: isMobile ? 120 : 180, height: 4, background: 'rgba(201,169,110,0.2)', borderRadius: 2 }}>
+                    <div style={{
+                      height: 4, borderRadius: 2,
+                      width: `${Math.min(100, (guests.length / FREE_LIMIT) * 100)}%`,
+                      background: atFreeLimit
+                        ? 'linear-gradient(to right,#943030,#C0392B)'
+                        : 'linear-gradient(to right,#C9A96E,#8B6914)',
+                      transition: 'width 0.4s ease',
+                    }} />
+                  </div>
+                </div>
+                {atFreeLimit && (
+                  <span style={{
+                    fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase',
+                    padding: '3px 8px', borderRadius: 2,
+                    background: 'rgba(154,48,48,0.08)', color: '#943030',
+                    border: '1px solid rgba(154,48,48,0.22)',
+                  }}>
+                    Limit reached
+                  </span>
+                )}
+              </div>
+              <a
+                href="https://wa.me/YOURNUMBER?text=Hi%2C%20I'd%20like%20to%20unlock%20unlimited%20guests%20for%20my%20Wedvitation"
+                target="_blank" rel="noopener noreferrer"
+                style={{
+                  fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase',
+                  padding: '7px 14px', borderRadius: 1, textDecoration: 'none',
+                  background: 'linear-gradient(135deg,#C9A96E,#8B6914)', color: '#FAF6F0',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Unlock Unlimited →
+              </a>
+            </div>
+          )}
 
           {/* ── Stats ── */}
           <div className="fade-up" style={{
@@ -648,9 +738,33 @@ Confirma tu asistencia aquí:
                     </div>
                   </div>
                   <div style={{ height: 1, background: 'linear-gradient(to right,transparent,rgba(201,169,110,0.3),transparent)' }}/>
-                  <button onClick={createGuest} disabled={creating} style={goldBtn}>
-                    {creating ? 'Creating…' : 'Create & Add to Guest List'}
-                  </button>
+                  {atFreeLimit ? (
+                    <div style={{
+                      padding: '14px 16px', borderRadius: 1, textAlign: 'center',
+                      background: 'rgba(201,169,110,0.06)',
+                      border: '1px solid rgba(201,169,110,0.25)',
+                    }}>
+                      <p style={{ fontSize: 12, color: '#8B6914', marginBottom: 8, lineHeight: 1.5 }}>
+                        You've used all 5 free guest slots.
+                      </p>
+                      <a
+                        href="https://wa.me/YOURNUMBER?text=Hi%2C%20I'd%20like%20to%20unlock%20unlimited%20guests"
+                        target="_blank" rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-block', fontSize: 9, letterSpacing: '0.2em',
+                          textTransform: 'uppercase', padding: '9px 20px', borderRadius: 1,
+                          background: 'linear-gradient(135deg,#C9A96E,#8B6914)',
+                          color: '#FAF6F0', textDecoration: 'none',
+                        }}
+                      >
+                        Contact us to unlock unlimited →
+                      </a>
+                    </div>
+                  ) : (
+                    <button onClick={createGuest} disabled={creating} style={goldBtn}>
+                      {creating ? 'Creating…' : 'Create & Add to Guest List'}
+                    </button>
+                  )}
                   {msg && (
                     <p style={{ fontSize: 11, textAlign: 'center',
                       color: msg.startsWith('✓') ? '#3A6A34' : '#943030' }}>

@@ -27,7 +27,6 @@ export default async function DashboardPage() {
     ? weddingResult.data[0]
     : weddingResult.data
 
-  // get_my_wedding_details returns a single json scalar
   const initialData = detailsResult.data as WeddingData | null
 
   return (
@@ -36,6 +35,7 @@ export default async function DashboardPage() {
       coupleName      = {wedding?.couple_names  ?? 'Sofia & Marco'}
       initialTemplate = {wedding?.wa_template   ?? ''}
       initialThemeId  = {wedding?.theme_id      ?? 'warm-gold'}
+      isPremium       = {wedding?.is_premium     ?? false}
       initialData     = {initialData}
       baseUrl         = {process.env.NEXT_PUBLIC_BASE_URL ?? 'https://wed-vitation.vercel.app'}
     />
