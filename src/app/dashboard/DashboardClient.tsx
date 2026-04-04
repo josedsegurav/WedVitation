@@ -261,6 +261,8 @@ Confirma tu asistencia aquí:
   const guestsLeft  = isPremium ? null : Math.max(0, FREE_LIMIT - guests.length)
   const atFreeLimit = !isPremium && guests.length >= FREE_LIMIT
 
+  const [seatingPreview, setSeatingPreview] = useState(false)
+
   const st = useMemo(() => {
     const conf = guests.filter(g => g.status === 'confirmed')
     return {
@@ -456,13 +458,124 @@ Confirma tu asistencia aquí:
                   Seating
                 </a>
               ) : (
-                <span title="Unlock unlimited guests to access the seating planner"
-                  style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
-                  color: '#8B6914', opacity: 0.3, cursor: 'not-allowed',
-                  border: '1px solid rgba(201,169,110,0.2)', padding: '5px 12px', borderRadius: 1,
-                  display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                  🔒 Seating
-                </span>
+                <>
+                  <button
+                    onClick={() => setSeatingPreview(true)}
+                    style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+                      fontFamily: 'inherit', cursor: 'pointer',
+                      color: '#8B6914', opacity: 0.5, background: 'none',
+                      border: '1px solid rgba(201,169,110,0.2)', padding: '5px 12px', borderRadius: 1,
+                      display: 'inline-flex', alignItems: 'center', gap: 5,
+                      transition: 'opacity 0.2s' }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '0.5')}
+                  >
+                    🔒 Seating
+                  </button>
+
+                  {/* Seating preview lightbox */}
+                  {seatingPreview && (
+                    <div
+                      onClick={() => setSeatingPreview(false)}
+                      style={{
+                        position: 'fixed', top: '1.5em', left: 0, right: 0, zIndex: 200,
+                        background: 'rgba(12,8,2,0.88)',
+                        backdropFilter: 'blur(10px)',
+                        display: 'flex', flexDirection: 'column',
+                        alignItems: 'center', justifyContent: 'center',
+                        padding: 24,
+                        animation: 'fadeUp 0.2s ease',
+                      }}
+                    >
+                      {/* Card */}
+                      <div
+                        onClick={e => e.stopPropagation()}
+                        style={{
+                          position: 'relative',
+                          background: 'linear-gradient(160deg,rgba(253,248,242,0.98),rgba(245,237,224,0.92))',
+                          border: '1px solid rgba(201,169,110,0.3)',
+                          borderRadius: 4,
+                          boxShadow: '0 24px 80px rgba(0,0,0,0.5)',
+                          maxWidth: 860, width: '100%',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {/* Header */}
+                        <div style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          padding: '16px 20px',
+                          borderBottom: '1px solid rgba(201,169,110,0.18)',
+                        }}>
+                          <div>
+                            <p style={{ fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#C9A96E', marginBottom: 2 }}>
+                              Premium Feature
+                            </p>
+                            <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.1rem', fontWeight: 300, color: '#2C2C2C' }}>
+                              Seating Planner
+                            </p>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <a
+                              href="https://wa.me/12042942067?text=Hi%2C%20I'd%20like%20to%20unlock%20the%20seating%20planner"
+                              target="_blank" rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              style={{
+                                fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase',
+                                padding: '7px 16px', borderRadius: 1, textDecoration: 'none',
+                                background: 'linear-gradient(135deg,#C9A96E,#8B6914)', color: '#FAF6F0',
+                              }}
+                            >
+                              Unlock →
+                            </a>
+                            <button
+                              onClick={() => setSeatingPreview(false)}
+                              style={{
+                                width: 32, height: 32, borderRadius: 1, cursor: 'pointer',
+                                background: 'rgba(201,169,110,0.08)', border: '1px solid rgba(201,169,110,0.25)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: '#8B6914', fontSize: 16, lineHeight: 1,
+                              }}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Screenshot */}
+                        <div style={{ position: 'relative', width: '100%' }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src="/seating-preview.png"
+                            alt="Seating planner feature preview"
+                            style={{ width: '100%', display: 'block' }}
+                          />
+                          {/* Soft bottom fade so the card looks intentionally cropped */}
+                          <div style={{
+                            position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+                            background: 'linear-gradient(to bottom, transparent, rgba(245,237,224,0.92))',
+                            pointerEvents: 'none',
+                          }} />
+                        </div>
+
+                        {/* Footer CTA */}
+                        <div style={{
+                          padding: '14px 20px', textAlign: 'center',
+                          borderTop: '1px solid rgba(201,169,110,0.12)',
+                        }}>
+                          <p style={{ fontSize: 11, color: '#8B6914', opacity: 0.7 }}>
+                            Drag &amp; drop guests onto tables, visualise your layout, and export your plan.
+                            Available with unlimited access.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Click outside hint */}
+                      <p style={{ marginTop: 16, fontSize: 10, color: 'rgba(245,237,224,0.35)', letterSpacing: '0.1em' }}>
+                        Click outside to close
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
             <button
@@ -521,7 +634,7 @@ Confirma tu asistencia aquí:
                 )}
               </div>
               <a
-                href="https://wa.me/YOURNUMBER?text=Hi%2C%20I'd%20like%20to%20unlock%20unlimited%20guests%20for%20my%20Wedvitation"
+                href="https://wa.me/12042942067?text=Hi%2C%20I'd%20like%20to%20unlock%20unlimited%20guests%20for%20my%20Wedvitation"
                 target="_blank" rel="noopener noreferrer"
                 style={{
                   fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase',
@@ -748,7 +861,7 @@ Confirma tu asistencia aquí:
                         You've used all 5 free guest slots.
                       </p>
                       <a
-                        href="https://wa.me/YOURNUMBER?text=Hi%2C%20I'd%20like%20to%20unlock%20unlimited%20guests"
+                        href="https://wa.me/12042942067?text=Hi%2C%20I'd%20like%20to%20unlock%20unlimited%20guests"
                         target="_blank" rel="noopener noreferrer"
                         style={{
                           display: 'inline-block', fontSize: 9, letterSpacing: '0.2em',
