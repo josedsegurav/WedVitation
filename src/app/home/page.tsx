@@ -65,11 +65,11 @@ function FeatureCard({ icon, title, desc, delay }: {
       <div style={{ marginBottom: 16 }}>{icon}</div>
       <p style={{
         fontFamily: "'Cormorant Garamond', serif",
-        fontSize: '1.15rem', fontWeight: 400,
+        fontSize: '1.2rem', fontWeight: 400,
         color: 'var(--color-heading)', marginBottom: 8,
       }}>{title}</p>
       <p style={{
-        fontSize: 12, lineHeight: 1.7,
+        fontSize: '0.9rem', lineHeight: 1.7,
         color: 'var(--color-body)', opacity: 0.75,
       }}>{desc}</p>
     </div>
@@ -107,10 +107,10 @@ function StepItem({ n, title, desc, delay }: { n: string; title: string; desc: s
       <div>
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
-          fontSize: '1.1rem', fontWeight: 400,
+          fontSize: '1.2rem', fontWeight: 400,
           color: 'var(--color-heading)', marginBottom: 4,
         }}>{title}</p>
-        <p style={{ fontSize: 12, lineHeight: 1.7, color: 'var(--color-body)', opacity: 0.7 }}>{desc}</p>
+        <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--color-body)', opacity: 0.7 }}>{desc}</p>
       </div>
     </div>
   )
@@ -222,7 +222,7 @@ export default function LandingPage() {
 
         {/* Eyebrow */}
         <p style={{
-          fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase',
+          fontSize: '0.8rem', letterSpacing: '0.4em', textTransform: 'uppercase',
           color: 'var(--color-gold)', marginBottom: 20,
           opacity: heroVisible ? 1 : 0,
           transform: heroVisible ? 'translateY(0)' : 'translateY(16px)',
@@ -271,7 +271,7 @@ export default function LandingPage() {
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: 'italic', fontWeight: 300,
-          fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+          fontSize: 'clamp(1.3rem, 2.5vw, 1.25rem)',
           color: 'var(--color-body)', lineHeight: 1.8,
           maxWidth: 480, marginBottom: 40,
           opacity: heroVisible ? 1 : 0,
@@ -354,7 +354,7 @@ export default function LandingPage() {
         }} />
 
         <p style={{
-          fontSize: 9, letterSpacing: '0.35em', textTransform: 'uppercase',
+          fontSize: '0.8rem', letterSpacing: '0.35em', textTransform: 'uppercase',
           color: 'var(--color-gold)', marginBottom: 12,
         }}>
           The Experience
@@ -367,7 +367,7 @@ export default function LandingPage() {
           An invitation your guests will remember
         </h2>
         <p style={{
-          fontSize: 12, color: 'rgba(245,237,224,0.6)', lineHeight: 1.7,
+          fontSize: '1rem', color: 'rgba(245,237,224,0.6)', lineHeight: 1.7,
           maxWidth: 420, margin: '0 auto 48px',
         }}>
           Each invitation is personalised to your guest, delivered via a unique private link.
@@ -436,7 +436,7 @@ export default function LandingPage() {
         background: 'var(--gradient-section)',
         textAlign: 'center',
       }}>
-        <p style={{ fontSize: 9, letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: 12 }}>
+        <p style={{ fontSize: '0.8rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: 12 }}>
           Everything You Need
         </p>
         <h2 style={{
@@ -447,7 +447,7 @@ export default function LandingPage() {
           One platform, every detail
         </h2>
         <p style={{
-          fontSize: 12, color: 'var(--color-body)', opacity: 0.7, lineHeight: 1.7,
+          fontSize: '1rem', color: 'var(--color-body)', opacity: 0.7, lineHeight: 1.7,
           maxWidth: 400, margin: '0 auto 48px',
         }}>
           From the first invitation to the final seating chart — designed to be beautiful and effortless.
@@ -499,7 +499,7 @@ export default function LandingPage() {
       }}>
         <div style={{ maxWidth: 560, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <p style={{ fontSize: 9, letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: 12 }}>
+            <p style={{ fontSize: '0.8rem', letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: 12 }}>
               Getting Started
             </p>
             <h2 style={{
@@ -543,7 +543,7 @@ export default function LandingPage() {
         }} />
 
         <div style={{ position: 'relative' }}>
-          <p style={{ fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: 16 }}>
+          <p style={{ fontSize: '0.8rem', letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--color-gold)', marginBottom: 16 }}>
             Begin Your Story
           </p>
           <h2 style={{
@@ -560,7 +560,7 @@ export default function LandingPage() {
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: 'italic', fontWeight: 300,
-            fontSize: '1.1rem', color: 'rgba(245,237,224,0.65)',
+            fontSize: '1.2rem', color: 'rgba(245,237,224,0.65)',
             lineHeight: 1.7, maxWidth: 380, margin: '0 auto 36px',
           }}>
             Join couples who chose to make their wedding invitations as beautiful as their love.
@@ -604,10 +604,10 @@ export default function LandingPage() {
           </svg>
           <span style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: '0.9rem', color: 'var(--color-body)',
+            fontSize: '1rem', color: 'var(--color-body)',
           }}>wedvitation</span>
         </div>
-        <p style={{ fontSize: 10, color: 'var(--color-body)', opacity: 0.5, letterSpacing: '0.05em' }}>
+        <p style={{ fontSize: '0.9rem', color: 'var(--color-body)', opacity: 0.5, letterSpacing: '0.05em' }}>
           Made with love, for love.
         </p>
       </footer>
